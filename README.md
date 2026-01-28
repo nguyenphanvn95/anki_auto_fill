@@ -1,92 +1,155 @@
-# ENVI Auto Fill Fields - Anki Addon
+# ENVI Auto Fill Fields – Custom Version
 
-**Phiên bản:** 1.0.0  
-**Tác giả:** Nguyễn Văn Phán
+## 1. Giới thiệu
+**ENVI Auto Fill Fields** là addon mở rộng cho Anki giúp:
+- Tra cứu từ vựng tiếng Anh (nguồn ENVI)
+- Tự động điền dữ liệu vào các field của note type
+- Phù hợp cho học từ vựng, IELTS, active recall, cloze, điền từ
 
-## Mô tả
+Phiên bản này là **bản custom nâng cấp**, được chỉnh sửa để:
+- Lưu config ổn định
+- Tương thích Anki 25+ (Python 3.13, Qt6)
+- Ghi dữ liệu chính xác, format đẹp (HTML `<br>`)
+- Không lỗi mapping field
 
-Addon tự động điền thông tin từ vựng tiếng Anh vào các trường dữ liệu của thẻ Anki. Sử dụng API từ en.jpdictionary.com để tra cứu và lấy thông tin chi tiết về từ vựng.
+---
 
-## Tính năng
+## 2. Yêu cầu hệ thống
+- Anki **25.0 trở lên**
+- Python: 3.9+ (Anki 25.02+ dùng 3.13)
+- Hệ điều hành: Windows / macOS / Linux
+- Không yêu cầu AnkiConnect
 
-### 1. Menu Tools - ENVI Auto Fill
-- **Lookup**: Tra cứu từ vựng đơn thuần (giống addon cũ)
-- **Settings**: Cấu hình addon
-- **About**: Thông tin về addon
+---
 
-### 2. Cấu hình (Settings)
-- Chọn Note Type mặc định
-- Chọn trường chứa từ vựng cần tra (Word Field)
-- Mapping các trường dữ liệu:
-  - Definition (Định nghĩa)
-  - Pronunciation (Phát âm IPA)
-  - Part of Speech (Loại từ)
-  - Meanings (Nghĩa tiếng Việt)
-  - Examples (Ví dụ)
-- Bật/tắt addon
-- Cài đặt ghi đè dữ liệu cũ
+## 3. Cấu trúc dữ liệu ENVI (Raw JSON)
 
-### 3. Chế độ Review (Học thẻ)
-- Tự động kiểm tra và điền dữ liệu khi hiển thị thẻ
-- Chỉ xử lý thẻ có Note Type trùng với cấu hình
-- Tự động tra cứu từ Word Field và điền vào các trường khác
+```json
+{
+  "word": "speech",
+  "pron": "spiːtʃ",
+  "pos": "danh từ",
+  "def": "Speech có nghĩa là khả năng nói hoặc một bài phát biểu.",
+  "mean": [
+    {
+      "m": "bài phát biểu",
+      "e": "Her [speech] at the wedding was very touching.",
+      "v": "Bài [phát biểu] của cô ấy tại đám cưới rất cảm động."
+    },
+    {
+      "m": "khả năng nói",
+      "e": "He has a talent for [speech] and public speaking.",
+      "v": "Anh ấy có tài năng về [khả năng nói] và diễn thuyết."
+    }
+  ]
+}
+```
 
-### 4. Chế độ Browser
-- Menu Edit → "ENVI Auto Fill - Process Cards"
-- Chọn 1 hoặc nhiều thẻ
-- Xử lý hàng loạt với progress bar
-- Hiển thị kết quả và lỗi chi tiết
+---
 
-## Cài đặt
+## 4. Mapping dữ liệu → Anki Fields
 
-1. Tải file addon (.ankiaddon hoặc .zip)
-2. Mở Anki → Tools → Add-ons → Install from file
-3. Chọn file vừa tải
-4. Khởi động lại Anki
+| Trường Anki | Dữ liệu |
+|------------|--------|
+| Vocab | word |
+| IPA | pron |
+| Part of speech | pos |
+| Definition_VI | mean[].m |
+| Example | mean[].e + mean[].v |
+| Sources | def |
 
-## Hướng dẫn sử dụng
+### Format chuẩn
+- **Definition_VI**: mỗi nghĩa 1 dòng (`<br>`)
+- **Example**:
+  - EN
+  - `<br>`
+  - VI
+  - `<br><br>` giữa các ví dụ
 
-### Bước 1: Cấu hình
-1. Mở Anki → Tools → ENVI Auto Fill → Settings
-2. Chọn Note Type bạn muốn sử dụng
-3. Chọn trường chứa từ vựng (Word Field)
-4. Mapping các trường khác (Definition, Pronunciation, v.v.)
-5. Click Save
+---
 
-### Bước 2: Sử dụng
-**Trong Review:**
-- Addon tự động hoạt động khi bạn học thẻ
-- Không cần làm gì thêm
+## 5. Cài đặt addon
 
-**Trong Browser:**
-1. Chọn các thẻ cần xử lý
-2. Edit → "ENVI Auto Fill - Process Cards"
-3. Đợi xử lý hoàn tất
+### Cách 1: Chép đè thủ công (khuyến nghị)
+1. Anki → Tools → Add-ons → chọn addon → **View Files**
+2. Chép thư mục `anki_auto_fill_addon/` vào `addons21/`
+3. Restart Anki
 
-## Lưu ý
-- Addon chỉ xử lý thẻ có Note Type trùng với cấu hình
-- Nếu chưa cấu hình, addon sẽ yêu cầu cài đặt
-- Khi tắt addon, các tính năng tự động sẽ không hoạt động
-- API có thể giới hạn số lượng request, nên xử lý từng nhóm nhỏ
+---
 
-## Cấu trúc dữ liệu
-- **Definition**: Định nghĩa chi tiết của từ
-- **Pronunciation**: Phát âm IPA (ví dụ: /wɜːd/)
-- **POS**: Loại từ (noun, verb, adjective, v.v.)
-- **Meanings**: Nghĩa tiếng Việt, mỗi nghĩa một dòng
-- **Examples**: Ví dụ sử dụng, mỗi ví dụ gồm câu tiếng Anh và nghĩa tiếng Việt
+## 6. Thiết lập (Settings)
 
-## Hỗ trợ
-Nếu gặp lỗi, vui lòng kiểm tra:
-1. Kết nối internet
-2. Cấu hình Note Type và Field Mapping
-3. Log lỗi trong Anki (Tools → Add-ons → View Files → debug.log)
+Vào:
+```
+Tools → ENVI Auto Fill → Settings
+```
 
-## Changelog
+### Các tuỳ chọn:
+- ☑ Enable Auto Fill
+- ☑ Overwrite existing data
+- ☑ Show POS tags in meanings (tuỳ chọn)
 
-### Version 1.0.0 (2026-01-28)
-- Phiên bản đầu tiên
-- Tự động điền dữ liệu trong review và browser
-- Cấu hình linh hoạt
-- Progress tracking
-- Error logging
+### Mapping:
+- Word Field: `Vocab`
+- Pronunciation Field: `IPA`
+- Part of Speech Field: `Part of speech`
+- Meanings Field: `Definition_VI`
+- Examples Field: `Example`
+- Sources Field: `Sources`
+
+Bấm **Save** → config được lưu ngay.
+
+---
+
+## 7. Cách sử dụng
+
+### Tự động điền:
+1. Mở Browser
+2. Chọn các note có field Vocab
+3. Menu → ENVI Auto Fill → Process Cards
+
+### Khi review:
+- Addon sẽ tự fill các field còn trống
+- Không ghi đè nếu bạn bỏ chọn Overwrite
+
+---
+
+## 8. Fix & nâng cấp quan trọng
+
+### ✔ api.py
+- Chuẩn hoá meanings, examples
+- Xuất nhiều key tương thích:
+  - IPA: `pronunciation`, `ipa`, `IPA`
+  - POS: `pos`, `part_of_speech`
+  - Sources: `def`, `definition`, `sources`
+
+### ✔ processor.py
+- Fallback alias khi đọc field
+- Không phụ thuộc key cứng
+- Không mất dữ liệu khi đổi mapping
+
+---
+
+## 9. Lỗi thường gặp
+
+### ❌ Không thấy IPA / Sources
+✔ Đã fix bằng alias key
+✔ Kiểm tra mapping trong Settings
+
+### ❌ Báo "Please configure addon"
+✔ Đã fix lưu config theo addon ID
+✔ Restart Anki sau khi Save
+
+---
+
+## 10. Gợi ý nâng cấp thêm
+- Tách Example_EN / Example_VI
+- Highlight từ vựng trong ví dụ
+- Tuỳ chọn phân cách nghĩa: dòng / dấu phẩy
+- Cloze + active recall template
+
+---
+
+## 11. Tác giả & ghi chú
+- Custom & debug: theo workflow học thực tế
+- Mục tiêu: **đúng dữ liệu – đẹp trình bày – học hiệu quả**
