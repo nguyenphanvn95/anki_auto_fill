@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "overwrite": true,
+  "show_pos_in_meanings": true,
+  "note_type": "",
+  "field_mapping": {
+    "word": "",
+    "definition": "",
+    "pronunciation": "",
+    "pos": "",
+    "meanings": "",
+    "examples": ""
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "ENVI Auto Fill Fields",
+  "package": "anki_auto_fill_addon",
+  "version": "1.0.2",
+  "min_point_version": 250000,
+  "max_point_version": 999999,
+  "author": "Nguyễn Văn Phán",
+  "conflicts": [],
+  "mod": 0
+}

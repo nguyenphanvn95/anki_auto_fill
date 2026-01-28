@@ -1,0 +1,1 @@
+{"name": "ENVI Auto Fill Fields", "mod": 0, "config": {"enabled": true, "overwrite": true, "show_pos_in_meanings": true, "note_type": "ENVI_Vocabulary auto", "field_mapping": {"word": "Vocab", "definition": "", "pronunciation": "IPA", "pos": "Part of speech", "meanings": "Definition_VI", "examples": "Example"}}}
